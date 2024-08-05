@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { MulterModule } from '@nestjs/platform-express';
 import { AuthModule } from './auth/auth.module';
 
 import { APP_GUARD } from '@nestjs/core';
@@ -11,15 +13,22 @@ import { ConfigService } from './config/config.service';
 import { UsersModule } from './users/user.module';
 import { User } from './users/entities/user.entity';
 import { EmailVerification } from './users/entities/email-verification.entity';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule,
     AuthModule,
     UsersModule,
+    MulterModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        dest: configService.get('LOCAL_FILE_UPLOAD_DEST'),
+      }),
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('DB_HOST'),
@@ -30,10 +39,8 @@ import { JwtModule } from '@nestjs/jwt';
         entities: [User, EmailVerification],
         synchronize: true,
       }),
-      inject: [ConfigService],
     }),
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
