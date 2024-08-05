@@ -21,6 +21,7 @@ git clone https://github.com/alulamoke/nestjs-starter.git
 
 ```js
 PORT=3000
+LOCAL_FILE_UPLOAD_DEST=./uploads
 
 DB_HOST=localhost
 DB_PORT=5432
