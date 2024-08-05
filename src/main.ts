@@ -22,7 +22,9 @@ async function bootstrap() {
     .setTitle('nestjs-starter')
     .setDescription('nestjs-starter API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document, {
     jsonDocumentUrl: 'swagger/json',
