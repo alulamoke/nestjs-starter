@@ -6,28 +6,23 @@ import {
   Get,
   Body,
   Query,
-  UsePipes,
   HttpException,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 
 import { Public } from 'src/common/decorators/public.decorator';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation-pipe.pipe';
-import {
-  signupSchema,
-  loginSchema,
-  TSignupDto,
-  TLoginDto,
-} from 'src/users/dto/users.dto';
 
-import { registerSwaggerDocs } from './swagger-docs/register.doc';
-import { loginSwaggerDocs } from './swagger-docs/login.doc';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+
+import { RegisterSwagger } from './swagger/register.swagger';
+import { LoginSwagger } from './swagger/login.swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -38,19 +33,19 @@ export class AuthController {
   ) {}
 
   @Get()
+  @ApiBearerAuth()
   getAuthDetail(@Req() req) {
     return req.user;
   }
 
   @Public()
-  @UsePipes(new ZodValidationPipe(signupSchema))
   @Post('register')
-  @registerSwaggerDocs.operation
-  @registerSwaggerDocs.body
-  @registerSwaggerDocs.responses_1
-  @registerSwaggerDocs.responses_2
-  async register(@Body() signupDto: TSignupDto) {
-    await this.usersService.create(signupDto);
+  @RegisterSwagger.operation
+  @RegisterSwagger.body
+  @RegisterSwagger.responses.success
+  @RegisterSwagger.responses.badRequest
+  async register(@Body() registerDto: RegisterDto) {
+    await this.usersService.create(registerDto);
     return {
       message:
         'User registered successfully. Please check your email to verify your account.',
@@ -58,15 +53,14 @@ export class AuthController {
   }
 
   @Public()
-  @HttpCode(HttpStatus.OK)
-  @UsePipes(new ZodValidationPipe(loginSchema))
   @Post('login')
-  @loginSwaggerDocs.operation
-  @loginSwaggerDocs.body
-  @loginSwaggerDocs.responses_1
-  @loginSwaggerDocs.responses_2
+  @HttpCode(HttpStatus.OK)
+  @LoginSwagger.operation
+  @LoginSwagger.body
+  @LoginSwagger.responses.success
+  @LoginSwagger.responses.unauthorized
   async login(
-    @Body() loginDto: TLoginDto,
+    @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = await this.authService.validateUser(
@@ -113,8 +107,9 @@ export class AuthController {
     return { message: 'Email verified successfully.' };
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
   async logout(@Req() req, @Res({ passthrough: true }) res: Response) {
     const refreshToken = req.cookies.refresh_token;
     if (!refreshToken) {

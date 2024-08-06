@@ -6,10 +6,10 @@ import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 
 import { ConfigService } from 'src/config/config.service';
+import { RegisterDto } from 'src/auth/dto/register.dto';
 
 import { User } from './entities/user.entity';
 import { EmailVerification } from './entities/email-verification.entity';
-import { TSignupDto } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -29,7 +29,7 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-  async create(body: TSignupDto): Promise<User> {
+  async create(body: RegisterDto): Promise<User> {
     const userExists = await this.findOneByEmail(body.email);
     if (userExists) {
       throw new HttpException('User already exists.', HttpStatus.BAD_REQUEST);
