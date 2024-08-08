@@ -20,12 +20,12 @@ git clone https://github.com/alulamoke/nestjs-starter.git
 - Create .env file and include those 👇 to the .env
 
 ```js
-PORT=3000
-LOCAL_FILE_UPLOAD_DEST=./uploads
+PORT=
+LOCAL_FILE_UPLOAD_DEST=
 
 DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
+DB_PORT=
+DB_USERNAME=
 DB_PASSWORD=
 DB_NAME=
 
