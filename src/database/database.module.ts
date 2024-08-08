@@ -1,11 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { ConfigModule } from 'src/config/config.module';
-import { ConfigService } from 'src/config/config.service';
-
-import { User } from 'src/users/entities/user.entity';
-import { EmailVerification } from 'src/users/entities/email-verification.entity';
 
 @Module({
   imports: [
@@ -19,7 +14,7 @@ import { EmailVerification } from 'src/users/entities/email-verification.entity'
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [User, EmailVerification],
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
     }),
