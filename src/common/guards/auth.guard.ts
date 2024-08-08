@@ -7,9 +7,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { instanceToPlain } from 'class-transformer';
 
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '@/auth/auth.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
@@ -36,7 +35,7 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.authservice.verifyAccessToken(token);
-      request['user'] = instanceToPlain(payload);
+      request['user'] = payload;
     } catch {
       throw new HttpException('Invalid token.', HttpStatus.FORBIDDEN);
     }

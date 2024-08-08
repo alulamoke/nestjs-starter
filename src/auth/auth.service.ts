@@ -1,17 +1,17 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
-import { ConfigService } from 'src/config/config.service';
+import { User } from '@/users/entities/user.entity';
+import { UsersService } from '@/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
     private configService: ConfigService,
+    private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {

@@ -1,12 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 
-import { ConfigService } from 'src/config/config.service';
-import { RegisterDto } from 'src/auth/dto/register.dto';
+import { RegisterDto } from '@/auth/dto/register.dto';
 
 import { User } from './entities/user.entity';
 import { EmailVerification } from './entities/email-verification.entity';
@@ -14,11 +14,11 @@ import { EmailVerification } from './entities/email-verification.entity';
 @Injectable()
 export class UsersService {
   constructor(
+    private configService: ConfigService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     @InjectRepository(EmailVerification)
     private emailVerificationRepository: Repository<EmailVerification>,
-    private configService: ConfigService,
   ) {}
 
   async findOneByEmail(email: string): Promise<User | undefined> {

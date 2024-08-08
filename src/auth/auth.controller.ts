@@ -14,9 +14,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '@/users/users.service';
 
-import { Public } from 'src/common/decorators/public.decorator';
+import { Public } from '@/common/decorators/public.decorator';
 
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
