@@ -12,12 +12,14 @@ export class SwaggerConfigModule {
     `,
       )
       .setVersion('1.0')
+      .addServer('http://localhost:3000')
       .addBearerAuth()
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('swagger', app, document, {
       jsonDocumentUrl: 'swagger/json',
+      yamlDocumentUrl: 'swagger/yaml',
     });
   }
 }
